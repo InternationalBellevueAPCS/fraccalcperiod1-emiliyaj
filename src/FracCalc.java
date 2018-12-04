@@ -1,16 +1,33 @@
+/*Emiliya Jones
+ *Period 1
+ *Fraction Calculator
+ *11 December, 2018 
+ */
+import java.util.*; // Import this library so that 'Scanner' can be utilized 
 public class FracCalc {
-
-    /**
-     * Prompts user for input, passes that input to produceAnswer, then outputs the result.
-     * @param args - unused
-     */
     public static void main(String[] args) 
     {
+    	System.out.println("Welcome to Fraction Calculator! Please input 2 values seperated by a space before and "
+    			+ "after the operation (+,-,*,/). Improper fractions can be inputed with an underscore"
+    			+ "seperating the number and the fraction.");
+    	System.out.println("Example: 4 + 6 OR 4_1/2 + 6 Please enter 'quit' if you'd like to stop!");
+    	Scanner console = new Scanner(System.in); //Scanner initialized so that the program can receive input from user
+    	System.out.print("Please input equation: ");
+    	String equation = console.nextLine();
+    	while (!(equation.equals("quit")))
+    	{
+    		System.out.println(produceAnswer(equation));
+    		System.out.print("Please input equation: ");
+        	equation = console.nextLine(); // While loop needs to be updated in order to ask the user for input multiple times
+    	}
+    	if (equation.equalsIgnoreCase("quit")) // If user inputs 'quit' the program stops, not case-sensitive 
+    	{
+    		System.out.println("Thanks for playing!");
+    	}
+    }
         // TODO: Read the input from the user and call produceAnswer with an equation
         // Checkpoint 1: Create a Scanner, read one line of input, pass that input to produceAnswer, print the result.
-        // Checkpoint 2: Accept user input multiple times.
-    }
-    
+        // Checkpoint 2: Accept user input multiple times
     /**
      * produceAnswer - This function takes a String 'input' and produces the result.
      * @param input - A fraction string that needs to be evaluated.  For your program, this will be the user input.
@@ -20,18 +37,27 @@ public class FracCalc {
      */
     public static String produceAnswer(String input)
     { 
-        // TODO: Implement this function to produce the solution to the input
-        // Checkpoint 1: Return the second operand.  Example "4/5 * 1_2/4" returns "1_2/4".
-        // Checkpoint 2: Return the second operand as a string representing each part.
-        //               Example "4/5 * 1_2/4" returns "whole:1 numerator:2 denominator:4".
-        // Checkpoint 3: Evaluate the formula and return the result as a fraction.
-        //               Example "4/5 * 1_2/4" returns "6/5".
-        //               Note: Answer does not need to be reduced, but it must be correct.
-        // Final project: All answers must be reduced.
-        //               Example "4/5 * 1_2/4" returns "1_1/5".
-        
-        return "";
+    	for(int i = 0; i < input.length(); i++) 
+    	{
+    		char y = input.charAt(i);
+    		String first = input.substring(0,i); // This line gets the first answer but is not applied at this checkpoint
+            if (y == '+'|| y=='-'|| y=='*' || (y == '/' && input.charAt(i+1) == ' ')) 
+            {
+                String second = input.substring(i+2, input.length());  
+                return second; // Outputs the second number that is inputed by the user 
+            }
     }
+    	return input; // If you don't have this return statement then the program does not run correctly 
+}
+ // TODO: Implement this function to produce the solution to the input
+    // Checkpoint 1: Return the second operand.  Example "4/5 * 1_2/4" returns "1_2/4".
+    // Checkpoint 2: Return the second operand as a string representing each part.
+    //               Example "4/5 * 1_2/4" returns "whole:1 numerator:2 denominator:4".
+    // Checkpoint 3: Evaluate the formula and return the result as a fraction.
+    //               Example "4/5 * 1_2/4" returns "6/5".
+    //               Note: Answer does not need to be reduced, but it must be correct.
+    // Final project: All answers must be reduced.
+    //               Example "4/5 * 1_2/4" returns "1_1/5". 
 
     // TODO: Fill in the space below with helper methods
     

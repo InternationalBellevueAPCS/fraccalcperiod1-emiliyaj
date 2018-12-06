@@ -40,15 +40,40 @@ public class FracCalc {
     	for(int i = 0; i < input.length(); i++) 
     	{
     		char y = input.charAt(i);
-    		String first = input.substring(0,i); // This line gets the first answer but is not applied at this checkpoint
             if (y == '+'|| y=='-'|| y=='*' || (y == '/' && input.charAt(i+1) == ' ')) 
             {
-                String second = input.substring(i+2, input.length());  
-                return second; // Outputs the second number that is inputed by the user 
-            }
-    }
-    	return input; // If you don't have this return statement then the program does not run correctly 
+                String second = input.substring(i+2, input.length()); 
+                String first = input.substring(0,i); // This line gets the first answer but is not applied at this checkpoint
+                int underscore = second.indexOf("_");
+                int numeratorSeperate = second.indexOf("/");
+                if (underscore > 0) // Checks to see if the input is a mixed fraction
+                {
+                	String whole = "Whole: " + second.substring(0, underscore);
+                
+               	
+                if (numeratorSeperate > 0) // This is utilized when there is an underscore to separate a mixed fraction
+                	{
+                    String numerator = "Numerator: "+ second.substring(underscore + 1, numeratorSeperate);
+                    String denominator = "Denominator: "+ second.substring(numeratorSeperate + 1, second.length());
+                    return whole + " " + numerator + " " + denominator;
+                	}
+                }
+                if ((!(underscore > 0)) && numeratorSeperate > 0) // This is utilized when the second input is only a fraction
+                {
+                	String numerator = "Numerator: "+ second.substring(underscore + 1, numeratorSeperate);
+                    String denominator = "Denominator: "+ second.substring(numeratorSeperate + 1, second.length());
+                    return numerator + " " + denominator;
+                }
+                else // If not a mixed fraction AND not just a fraction, this prints out the number as a whole number
+                {
+                	return "Whole: " + input.substring(i+2, input.length());
+                }
+              }
+                
+    	}
+    	return input; // If you don't have this return statement then the program does not run correctly
 }
+
  // TODO: Implement this function to produce the solution to the input
     // Checkpoint 1: Return the second operand.  Example "4/5 * 1_2/4" returns "1_2/4".
     // Checkpoint 2: Return the second operand as a string representing each part.

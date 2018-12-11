@@ -190,7 +190,6 @@ public class FracCalc
        {
     	   String[] underscore = input.split("_"); // This checks for where there is an underscore for mixed fractions and keeps
               											// that as a whole number
-    	   String[] space = input.split(" "); // Utilize split function to get the numbers and operator separated
            String answer = underscore[0]; /*	The whole number would be the first index of the array SO it has to be set at 0
               								because of 0-indexing */
            return answer; // 'answer' must be a String because the static method is set to return a String
@@ -205,7 +204,6 @@ public class FracCalc
              if ((input.indexOf("_") > 0))
              {
             	 String[] underscore = input.split("_");
-            	 String[] space = input.split(" ");
             	 String fraction = underscore[1]; // The fraction is the second index of the array
             	 String[] numbersplit = fraction.split("/"); // Numerator and denominator are separated by the '/'
             	 String numerator = numbersplit[0];
@@ -228,10 +226,9 @@ public class FracCalc
              if ((input.indexOf("_") > 0))
              {
             	 String[] underscore = input.split("_");
-              String[] space = input.split(" ");
-              String fraction = underscore[1];
-              String[] numbersplit = fraction.split("/");
-              String denominator = numbersplit[1];
+            	 String fraction = underscore[1];
+            	 String[] numbersplit = fraction.split("/");
+            	 String denominator = numbersplit[1];
               return denominator;
         }
              else if ((input.indexOf("/") > 0))

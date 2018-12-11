@@ -184,6 +184,7 @@ public class FracCalc
         } 
     }
     
+    
     public static String wholeNumber(String input) // Method calculates the whole numbers
     {
        if ((input.indexOf("_") > 0) || (input.indexOf("/") < 0))

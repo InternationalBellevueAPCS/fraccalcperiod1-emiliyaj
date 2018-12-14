@@ -4,7 +4,7 @@
  *14 December, 2018 
  */
 /* Note: I had to change my code from earlier checkpoints 1 and 2 because I kept failing the tests and some of my numbers were said to be out of range. I used the split function
-instead of using a for-loop to search for the operand because it assured that my substring would not be out of range and less room for error */
+instead of using a for-loop to search for the operand because it assured that my substring would not be out of range and created less room for error */
 import java.util.*; // Import this library so that 'Scanner' can be utilized 
 public class FracCalc 
 {
@@ -28,13 +28,13 @@ public class FracCalc
     		System.out.println("Thanks for using!");
     	}
     }
-    public static String produceAnswer(String input)
+    public static String produceAnswer(String input) // Method that is called in main to find the answer (Returned as String)
     {
     	if (input.indexOf(" ") < 0)
     	{
-             return "Please input a correct number or number format. Thank you!"; // If the input is inputed incorrectly (i.e. 4 +2 (there is no 
+             return "Please input a correct number or fix your input format. Thank you!"; // If the input is inputed incorrectly (i.e. 4+ 2 (there is no 
              										// space after the '+' operand) then this print response is returned
-        }
+    	}
        int space = input.indexOf(" "); // Finds the first encounter of a space (in the first number)
        
        // In this section, the function inputed is split in the first and second number, as well as the operand which is used later to determine output 
@@ -88,14 +88,15 @@ public class FracCalc
            finalnumerator = mixedFraction(wholenumber,finalnumerator,finaldenominator);
            finalnumerator2 = mixedFraction(wholenumber2, finalnumerator2,finaldenominator2);
            finalnumerator+=finalnumerator2;
-           String answer = (Integer.toString(finalnumerator) + "/" + Integer.toString(finaldenominator));
+           //String answer = Integer.toString(finalanswer); Lines 91-92 utilized in checkpoint 3, NOT FINAL 
+           //String answer = (Integer.toString(finalnumerator) + "/" + Integer.toString(finaldenominator));
            if ((finalnumerator) == 0 || (finaldenominator == 0))
            {
         	   return "0"; // Has to be returned as a String and not just '0' because produceAnswer calls for String
            }
-           else // If the condition earlier is not applicable, then the program returns the String 'answer'
+           else // Simplifies the answer by using static method 'Simplification' below 
            {
-             return answer;
+             return Simplification(wholenumber,finalnumerator,finaldenominator); 
            }
        }
        
@@ -119,15 +120,27 @@ public class FracCalc
                finaldenominator2*=other;
                finalnumerator2*=other;  
            } 
-           finalnumerator-=finalnumerator2; // Earlier += was used but now -= because subtraction 
+           finalnumerator-=finalnumerator2; // Earlier += was used but now -= because subtraction
+           if ((Math.abs(finalnumerator))> (Math.abs(finaldenominator))) /* Makes sure that even if it is a negative
+        	   															then the number is tested and simplified */
+           {
+        	   return Simplification(wholenumber,finalnumerator,finaldenominator);
+           }
+           if ((finalnumerator != 0) && (finalnumerator2!= 0))
+           {
+        	   int actualnumerator = Reduction(finalnumerator,finaldenominator);
+               int actualdenominator = Reduction(finaldenominator,finalnumerator);
+               return Integer.toString(actualnumerator) + "/" + Integer.toString(actualdenominator); 
+               // Return as a String because 'produceAnswer' calls for String
+           }
            String answer = (Integer.toString(finalnumerator) + "/" + Integer.toString(finaldenominator));
-           if (finalnumerator == 0 || finaldenominator == 0) 
+           if (finalnumerator == 0 || finaldenominator == 0) // If they're both 0, it just returns 0
            {
         	   return "0";
            } 
            else
            {
-           return answer;
+        	   return answer; // Essentially this should not return because it has to simplify in the first condition
            }
        }
         // If the operation is multiplication, the code moves on to this section and executes code   
@@ -143,6 +156,15 @@ public class FracCalc
              
              finalnumerator*=finalnumerator2;
              finaldenominator*=finaldenominator2;
+             if ((Math.abs(finalnumerator)) > (Math.abs(finaldenominator))) 
+             {
+            	 return Simplification(wholenumber,finalnumerator,finaldenominator);
+             }
+             if (finalnumerator != 0 && finaldenominator != 0) // Numbers must be reduced 
+             {
+                 finalnumerator = Reduction(finalnumerator, finaldenominator);
+                 finaldenominator = Reduction(finaldenominator, finalnumerator);
+             }
              String answer = (Integer.toString(finalnumerator) + "/" + Integer.toString(finaldenominator));
              if ((finalnumerator == 0) || (finaldenominator == 0))
              {
@@ -150,38 +172,91 @@ public class FracCalc
              } 
              else
              {
-             return answer;
+            	 return answer;
              }
         }
         else if (operator.equals("/")) 
         {
-        	if ((finalnumerator == 0) && (finalnumerator2 == 0) && (wholenumber > 0) && (wholenumber2 > 0))
         	{
-        		return Integer.toString(wholenumber)+ "/" + Integer.toString(wholenumber2); 
-            }
-        	else if ((finalnumerator == 0) && (finalnumerator2 == 0) && (wholenumber < 0) && (wholenumber2 < 0))
-        	{
-        		wholenumber2 *= -1;
-                return Integer.toString(wholenumber)+ "/" + Integer.toString(wholenumber);
-            }
-        	finalnumerator = mixedFraction(wholenumber,finalnumerator,finaldenominator);
-            finalnumerator2 = mixedFraction(wholenumber2, finalnumerator2,finaldenominator2);    
-            finalnumerator*=finaldenominator2;
-            finaldenominator*=finalnumerator2;
-            String answer = (Integer.toString(finalnumerator)+ "/" + Integer.toString(finaldenominator));
-            if ((finalnumerator == 0) && (finaldenominator == 0))
-            {
-            	return "0";
-             }
-            else 
-            {
-            	return answer;
-            }
+        		if ((wholenumber != 0) && (wholenumber2 != 0)) // If the solution is not just 0 (in which case the program would just return 0, as in the bottom of this else-if's return)
+        		{
+        			if (wholenumber == wholenumber2) 
+        			{
+        				return "1";
+        			}
+        		}
+        		if (wholenumber2 == 1) 
+        		{
+        			return Integer.toString(wholenumber);
+                }
+        		else if (wholenumber2 == -1) 
+                {
+        			wholenumber *= -1; // Has to be converted to a negative to make sure that the number is not returned falsely positive 
+        			return Integer.toString(wholenumber);
+                }
+                if ((wholenumber < 0) && (wholenumber2 < 0))
+                {
+                	wholenumber *=-1; // If they are both negative, then the output is positive WHICH MEANS they must both be multiplied by -1 to keep same number but convert to positive
+                    wholenumber2 *=-1; // Note: Math.abs could also be utilized for this portion of the code
+                }
+                if (Math.abs(wholenumber) == 0) 
+                {
+                	if ((Math.abs(finalnumerator) == 0) || (Math.abs(finaldenominator) == 0))
+                	{
+                		return "0";
+                	}
+                }
+                if ((finalnumerator == 0) && (finalnumerator2 == 0) && (wholenumber != 0) && (wholenumber2 != 0))
+                {
+                	finalnumerator = wholenumber;
+                    finaldenominator = wholenumber2;                    
+               if (Math.abs(finalnumerator)> Math.abs(finaldenominator))
+               {
+            	   return Simplification(wholenumber,finalnumerator,finaldenominator);
+               }
+               return Integer.toString(wholenumber)+ "/" + Integer.toString(wholenumber2);
+               }
+                else if ((finalnumerator == 0) && (finalnumerator2 == 0) && (wholenumber < 0) && (wholenumber2 < 0)) // This is if the input is both negatives
+                {
+                	wholenumber *= -1;
+                    wholenumber2 *= -1;
+                    if (Math.abs(finalnumerator)>Math.abs(finaldenominator)) 
+                    {
+                    	return Simplification(wholenumber,finalnumerator,finaldenominator);
+                    }
+                    return Integer.toString(wholenumber)+ "/" + Integer.toString(wholenumber2);
+                }
+                finalnumerator = mixedFraction(wholenumber,finalnumerator,finaldenominator);
+                finalnumerator2 = mixedFraction(wholenumber2, finalnumerator2,finaldenominator2);
+                wholenumber = 0;
+                if (finalnumerator2 < 0) 
+                {
+                	finalnumerator *= finaldenominator2;
+                	finalnumerator *=-1;
+                	finaldenominator *=finalnumerator2;
+                	finaldenominator *=-1;
+                	} else
+                	{
+                		finalnumerator *= finaldenominator2;
+                		finaldenominator *=finalnumerator2;
+                	}
+                if ((finalnumerator != 0) && (finaldenominator != 0))
+                {
+                	return Simplification(wholenumber,finalnumerator,finaldenominator);
+                }
+                String answer = (Integer.toString(finalnumerator)+ "/" + Integer.toString(finaldenominator));
+                if ((finalnumerator == 0) && (finaldenominator == 0)) 
+                {
+                	return "0";
+                } 
+                else
+                {
+                	return answer;
+                }
+        	}
+        	
         }
-        else
-        {
-             return ""; // Return statement needed for code to run properly because String needs to be returned 
-        } 
+       return ""; // Need something to return in String form so that the program can run 
     }
     
     
@@ -263,43 +338,79 @@ public class FracCalc
              return numerator;
              }
         }
-        public static int Simplification (int finalnumerator, int finaldenominator) // Using this method for final checkpoint due Friday, disregard :)
+        public static int Reduction(int numerator, int denominator) /* This method is called when testing the operations, and is used
+        											to reduce the final answer, after simplification or without 
+        											if just a fraction */
         {
-        	if (finalnumerator % finaldenominator == 0)
+        	int gcd = GCD(numerator, denominator);
+        	if (gcd != 0) 
         	{
-        		return finalnumerator/finaldenominator;
-        	}
-        	else if (finalnumerator % finaldenominator != 0)
+        		return numerator/gcd;
+        	} 
+        	else
         	{
-        		int first = finalnumerator % finaldenominator;
-        		String first1 = Integer.toString(first);
-        		int second = finalnumerator/ finaldenominator;
-        		String second2 = Integer.toString(second);
-        		return second + "_" + first;
+                return numerator;
         	}
-        	
-			return 0;
         }
+        public static String Simplification (int whole, int numerator, int denominator) // Simplifies any fractions/mixed numbers
+        {
+        	if (Math.abs(numerator) >= Math.abs(denominator)) // Makes sure that negatives are taken into account
+        	{
+                whole = numerator/denominator;
+                numerator = numerator % denominator;
+                if (numerator == denominator)
+                {
+                	whole++; // When the numerator and denominator are the same, then they divide by one another for 1
+                	return Integer.toString(whole);
+                }
+                }
+        	if (denominator < 0) // If denominator is negative
+        	{
+                denominator *= -1; // Multiplied by -1 to make simplification easier
+            }
+        	if ((numerator <0) && (whole < 0)) 
+        	{
+                numerator*= -1;
+        	}
+        	if ((numerator <0) && (whole >0))
+        	{
+                numerator*= -1;
+                whole *= -1;
+            }
+        	
+        	int a = Reduction(numerator,denominator); // Call to reduce the numerator and denominator 
+        	int b = Reduction(denominator,numerator);
+        	if (a == b) // This means that when divided by one another, they would return 1
+        	{
+                return "1";
+            }
+        	 if (a == 0 || b == 0) // If there is NO numerator and denominator, then there is just a whole number
+        	{
+        		return Integer.toString(whole);
+        	}
+        	else if (whole == 0) // There is no whole number and the reduced result is just a fraction
+        	{
+        		return (Integer.toString(a) + "/" + Integer.toString(b));
+        	}
+        	return (Integer.toString(whole) + "_" + Integer.toString(a) + "/" + Integer.toString(b));
+        	/* This needs to be returned if none of the conditions are met, meaning it is a mixed number 
+        	and has both a whole number and fraction that is REDUCED */
+      }
         
-    /* This static method is used to find the GCD or 'Greatest Common Factor'; I will not be using this method
-        in this checkpoint (3) and will most likely use them when simplifying */
-    public static int greatestCommonDivisor(int a, int b)
+    /* This static method is used to find the GCD or 'Greatest Common Factor'*/
+    public static int GCD(int a, int b)
     {
         a = Math.abs(a);
         b = Math.abs(b);
         int max = Math.max(a, b);
         int min = Math.min(a, b);
-        while (min != 0) {
+        while (min != 0) 
+        {
             int tmp = min;
             min = max % min;
             max = tmp;
         }
         return max;
     }
-    public static int leastCommonMultiple(int a, int b)
-    {
-        int gcd = greatestCommonDivisor(a, b);
-        return (a*b)/gcd;
-    }
-}
 
+}
